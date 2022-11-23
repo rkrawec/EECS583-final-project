@@ -1,7 +1,4 @@
-root=~/EECS583Shared/
-cd root
-rm -rf build
-mkdir build
+root=~/EECS583Shared/llvm-14.0.6.src/
+cd ${root}
 cd build
-cmake ..
-make -j4
+make -j4 check-llvm-transforms-slpvectorizer check-llvm-transforms-slpvectorizer-x86
