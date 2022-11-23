@@ -6,14 +6,11 @@ target triple = "x86_64-unknown-linux-gnu"
 @.str = private unnamed_addr constant [5 x i8] c"woo!\00", align 1
 
 ; Function Attrs: noinline nounwind optnone uwtable
-define dso_local i32 @main() #0 {
+define dso_local void @foo() #0 {
 entry:
-  %retval = alloca i32, align 4
   %A = alloca [2048 x i32], align 16
   %B = alloca [2048 x i32], align 16
   %i = alloca i32, align 4
-  store i32 0, i32* %retval, align 4
-  %call = call i32 (i8*, ...) @printf(i8* noundef getelementptr inbounds ([5 x i8], [5 x i8]* @.str, i64 0, i64 0))
   store i32 0, i32* %i, align 4
   br label %for.cond
 
@@ -70,8 +67,15 @@ for.inc:                                          ; preds = %for.body
   br label %for.cond, !llvm.loop !4
 
 for.end:                                          ; preds = %for.cond
-  %14 = load i32, i32* %retval, align 4
-  ret i32 %14
+  ret void
+}
+
+; Function Attrs: noinline nounwind optnone uwtable
+define dso_local i32 @main() #0 {
+entry:
+  %call = call i32 (i8*, ...) @printf(i8* noundef getelementptr inbounds ([5 x i8], [5 x i8]* @.str, i64 0, i64 0))
+  call void @foo()
+  ret i32 0
 }
 
 declare dso_local i32 @printf(i8* noundef, ...) #1

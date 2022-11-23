@@ -1,5 +1,17 @@
 #include <stdio.h>
 
+void foo() {
+	int A[2048];
+	int B[2048];
+	for (int i = 0; i < 2048; i = i + 4)
+	{
+		B[i] = A[i];
+		B[(i + 1)] = A[(i + 1)];
+		B[(i + 2)] = A[(i + 2)];
+		B[(i + 3)] = A[(i + 3)];
+	}
+}
+
 int main()
 {
 	printf("woo!");
@@ -14,14 +26,6 @@ int main()
 	// 	// printf("%d\n", B[i]);
 	// }
 	// return 0;
-
-	int A[2048];
-	int B[2048];
-	for (int i = 0; i < 2048; i = i + 4)
-	{
-		B[i] = A[i];
-		B[(i + 1)] = A[(i + 1)];
-		B[(i + 2)] = A[(i + 2)];
-		B[(i + 3)] = A[(i + 3)];
-	}
+	foo();
+	
 }

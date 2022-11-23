@@ -100,7 +100,7 @@
 #include <utility>
 #include <vector>
 
-using namespace llvm;
+// using namespace llvm;
 using namespace llvm::PatternMatch;
 using namespace slpvectorizer;
 
@@ -109,8 +109,8 @@ using namespace slpvectorizer;
 
 STATISTIC(NumVectorInstructions, "Number of vector instructions generated");
 
-cl::opt<bool> RunSLPVectorization("vectorize-slp-Ryan-edit", cl::init(true), cl::Hidden,
-                                  cl::desc("Run the SLP vectorization passes"));
+// cl::opt<bool> RunSLPVectorization("vectorize-slp-Ryan-edit", cl::init(true), cl::Hidden,
+//                                   cl::desc("Run the SLP vectorization passes"));
 
 static cl::opt<int>
     SLPCostThreshold("slp-threshold-Ryan-edit", cl::init(0), cl::Hidden,
@@ -8867,8 +8867,9 @@ namespace
     bool runOnFunction(Function &F) override
     {
       errs() << "TEST";
-      if (skipFunction(F))
-        return false;
+      // if (skipFunction(F))
+      //   errs() << "TEST";
+      //   return false;
 
       auto *SE = &getAnalysis<ScalarEvolutionWrapperPass>().getSE();
       auto *TTI = &getAnalysis<TargetTransformInfoWrapperPass>().getTTI(F);
@@ -8934,8 +8935,8 @@ bool SLPVectorizerPass::runImpl(Function &F, ScalarEvolution *SE_,
                                 AssumptionCache *AC_, DemandedBits *DB_,
                                 OptimizationRemarkEmitter *ORE_)
 {
-  if (!RunSLPVectorization)
-    return false;
+  // if (!RunSLPVectorization)
+  //   return false;
   SE = SE_;
   TTI = TTI_;
   TLI = TLI_;
@@ -8983,9 +8984,12 @@ bool SLPVectorizerPass::runImpl(Function &F, ScalarEvolution *SE_,
     // Vectorize trees that end at stores.
     if (!Stores.empty())
     {
-      LLVM_DEBUG(dbgs() << "SLP: Found stores for " << Stores.size()
+      LLVM_DEBUG(dbgs() << "SLP123: Found stores for " << Stores.size()
                         << " underlying objects.\n");
+      errs() << "Previous store\n";
+      LLVM_DEBUG(dbgs() << "Previous Store is Changed? " << Changed << "\n");
       Changed |= vectorizeStoreChains(R);
+      LLVM_DEBUG(dbgs() << "Previous Store is Changed? " << Changed << "\n");
     }
 
     // Vectorize trees that end at reductions.
@@ -9002,6 +9006,7 @@ bool SLPVectorizerPass::runImpl(Function &F, ScalarEvolution *SE_,
     }
   }
 
+  LLVM_DEBUG(dbgs() << "Change is " << Changed << "\n");
   if (Changed)
   {
     R.optimizeGatherSequence();
@@ -11143,7 +11148,7 @@ bool SLPVectorizerPass::vectorizeChainsInBlock(BasicBlock *BB, BoUpSLP &R)
         isa<InsertValueInst>(it))
       PostProcessInstructions.push_back(&*it);
   }
-
+  errs() << Changed;
   return Changed;
 }
 
@@ -11361,4 +11366,6 @@ INITIALIZE_PASS_DEPENDENCY(OptimizationRemarkEmitterWrapperPass)
 INITIALIZE_PASS_DEPENDENCY(InjectTLIMappingsLegacy)
 INITIALIZE_PASS_END(SLPVectorizer, SV_NAME, lv_name, false, false)
 
-Pass *llvm::createSLPVectorizerPass() { return new SLPVectorizer(); }
+// Pass *llvm::createSLPVectorizerPass() { return new SLPVectorizer(); }
+
+static RegisterPass<SLPVectorizer> X("vectorize-slp-Ryan-edit", "Hello World Pass", false, false);

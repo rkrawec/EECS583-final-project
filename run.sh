@@ -1,6 +1,7 @@
 #PATH2LIB=~/HW2/build/HW2/LLVMHW2.so        # Specify your build directory in the project
 PATH2LIB=~/EECS583-final-project/build/SLPVectorizer/SLPVec.so 
 PASS=-vectorize-slp-Ryan-edit
+DEBUG=${2}
 
 # Delete outputs from previous run.
 rm -f  ${1}_after_vectorizer after_vectorizer_output *.bc
@@ -18,7 +19,7 @@ llvm-profdata merge -output=pgo.profdata default.profraw
 
 # Canonicalize natural loops
 #opt -enable-new-pm=0 -o ${1}.ls.bc -vectorize-slp  < ${1}.bc > /dev/null            #This is the original pass
-opt -enable-new-pm=0 -o ${1}.ls.bc  -load ${PATH2LIB} ${PASS} < ${1}.bc > /dev/null #This is our pass
+opt -enable-new-pm=0 -o ${1}.ls.bc -load ${PATH2LIB} ${PASS} < ${1}.bc ${DEBUG} > /dev/null #This is our pass 
 
 # Generate binary excutable before FPLICM: Unoptimzied code
 clang ${1}.ls.bc -o ${1}_after_vectorizer
